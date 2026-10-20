@@ -4,26 +4,35 @@ from pathlib import Path
 from typing import Any
 from fastapi import FastAPI, HTTPException, Request, Header
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
+from pydantic import BaseModel, Field
+
+HERE = Path(__file__).resolve().parent
+DB_PATH = Path(os.getenv("SECURESHARE_DB", str(HERE / "secureshare.db")))
+ADMIN_KEY = os.getenv(
+    "SECURESHARE_ADMIN_KEY",
+    "replace-this-with-a-long-random-admin-key"
+)
+
+app = FastAPI(
+    title="SecureShare API",
+    version="1.0.0",
+    description="Encrypted transfer storage prototype"
+)
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:5173",
         "http://127.0.0.1:5173",
+        "http://localhost:5174",
+        "http://127.0.0.1:5174",
         "https://secureshare-cyan.vercel.app",
     ],
     allow_credentials=False,
     allow_methods=["GET", "POST", "OPTIONS"],
     allow_headers=["Content-Type", "X-Admin-Key"],
 )
-from fastapi.responses import JSONResponse
-from pydantic import BaseModel, Field
-
-HERE = Path(__file__).resolve().parent
-DB_PATH = Path(os.getenv("SECURESHARE_DB", str(HERE / "secureshare.db")))
-ADMIN_KEY = os.getenv("SECURESHARE_ADMIN_KEY", "replace-this-with-a-long-random-admin-key")
-app = FastAPI(title="SecureShare API", version="1.0.0", description="Encrypted transfer storage prototype")
-app.add_middleware(CORSMiddleware, allow_origins=["http://localhost:5173","http://127.0.0.1:5173"], allow_credentials=False, allow_methods=["GET","POST","OPTIONS"], allow_headers=["Content-Type","X-Admin-Key"])
 
 def now(): return datetime.now(timezone.utc)
 def iso(dt): return dt.isoformat()
