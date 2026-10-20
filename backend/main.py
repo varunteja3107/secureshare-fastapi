@@ -3,7 +3,9 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
 from fastapi import FastAPI, HTTPException, Request, Header
-from fastapi.middleware.cors import CORSMiddlewareapp.add_middleware(
+from fastapi.middleware.cors import CORSMiddleware
+
+app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:5173",
